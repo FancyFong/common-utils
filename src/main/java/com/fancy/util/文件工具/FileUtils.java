@@ -1,6 +1,7 @@
 package com.fancy.util.文件工具;
 
 import com.fancy.util.系统工具.SysUtils;
+import com.qiniu.util.Base64;
 
 import java.io.*;
 import java.math.BigInteger;
@@ -614,6 +615,43 @@ public class FileUtils {
     public final static String suffix(File file){
         String fileName=file.getName();
         return fileName.substring(fileName.indexOf(".")+1);
+    }
+
+    /**
+     * 将文件转成base64 字符串
+     * @param path 文件路径
+     * @return
+     * @throws Exception
+     */
+
+    public static String encodeBase64File(String path) throws Exception {
+        String base64 = null;
+        InputStream in = null;
+        try {
+            in = new FileInputStream(path);
+            byte[] bytes = new byte[in.available()];
+            int length = in.read(bytes);
+            base64 = Base64.encodeToString(bytes, 0, length, Base64.DEFAULT);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (in != null) {
+                    in.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return base64;
+    }
+
+    public static void main(String[] args) throws Exception {
+        String imageData = encodeBase64File("E:\\1.png");
+        String imgStr = imageData.substring(imageData.indexOf(",") + 1, imageData.length());
+        System.out.println(imgStr);
     }
 
 }
