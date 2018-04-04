@@ -39,7 +39,7 @@ public class BaiduMapUtils {
         url = String.format(url,lat,lng,AK);
 
         try {
-            String str = OkhttpUtil.getMethod(url);
+            String str = OkhttpUtil.getMethod(url,OkhttpUtil.setHeaders(null));
             BaiduCity parse = JSON.parseObject(str, BaiduCity.class);
             return parse;
         } catch (IOException e) {
@@ -59,7 +59,7 @@ public class BaiduMapUtils {
         url = String.format(url,address,city,AK);
 
         try {
-            String str = OkhttpUtil.getMethod(url);
+            String str = OkhttpUtil.getMethod(url,OkhttpUtil.setHeaders(null));
             BaiduCityLocation parse = JSON.parseObject(str, BaiduCityLocation.class);
             return parse;
         } catch (IOException e) {
