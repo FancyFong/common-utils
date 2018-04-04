@@ -14,19 +14,19 @@ import java.util.Map;
  * @create 2018/4/4
  * @since 1.0.0
  */
-public class OkhttpUtil {
+public class OkHttpUtils {
 
     static OkHttpClient client = new OkHttpClient();
 
     public static void main(String[] args) throws IOException {
-        String getStr = getMethod("http://www.baidu.com?position=0&page=1&rows=10",OkhttpUtil.setHeaders(null));
+        String getStr = getMethod("http://www.baidu.com?position=0&page=1&rows=10", OkHttpUtils.setHeaders(null));
         System.out.println(getStr);
 
         Map<String,Object> map = new HashMap<>();
         map.put("openId","oIBWWjkNo4i7NUJ2-S5TpG7ikYaE");
         map.put("communityId",1);
         map.put("type",4);
-        String getPostStr = postFormMethod("http://www.baidu.com", OkhttpUtil.setHeaders(null),map);
+        String getPostStr = postFormMethod("http://www.baidu.com", OkHttpUtils.setHeaders(null),map);
         System.out.println(getPostStr);
 
         String json = "{\n" +
@@ -46,7 +46,7 @@ public class OkhttpUtil {
                 "  \"province\": \"string\",\n" +
                 "  \"sex\": 0\n" +
                 "}";
-        String getPostJsonStr = postJsonMethod("http://www.baidu.com", OkhttpUtil.setHeaders(null),json);
+        String getPostJsonStr = postJsonMethod("http://www.baidu.com", OkHttpUtils.setHeaders(null),json);
         System.out.println(getPostJsonStr);
     }
 

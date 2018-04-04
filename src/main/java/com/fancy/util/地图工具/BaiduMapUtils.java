@@ -1,7 +1,7 @@
 package com.fancy.util.地图工具;
 
 import com.alibaba.fastjson.JSON;
-import com.fancy.util.网络请求.OkhttpUtil;
+import com.fancy.util.网络请求.OkHttpUtils;
 
 import java.io.IOException;
 import java.util.List;
@@ -39,7 +39,7 @@ public class BaiduMapUtils {
         url = String.format(url,lat,lng,AK);
 
         try {
-            String str = OkhttpUtil.getMethod(url,OkhttpUtil.setHeaders(null));
+            String str = OkHttpUtils.getMethod(url, OkHttpUtils.setHeaders(null));
             BaiduCity parse = JSON.parseObject(str, BaiduCity.class);
             return parse;
         } catch (IOException e) {
@@ -59,7 +59,7 @@ public class BaiduMapUtils {
         url = String.format(url,address,city,AK);
 
         try {
-            String str = OkhttpUtil.getMethod(url,OkhttpUtil.setHeaders(null));
+            String str = OkHttpUtils.getMethod(url, OkHttpUtils.setHeaders(null));
             BaiduCityLocation parse = JSON.parseObject(str, BaiduCityLocation.class);
             return parse;
         } catch (IOException e) {
