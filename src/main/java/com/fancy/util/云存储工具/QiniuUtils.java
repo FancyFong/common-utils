@@ -19,6 +19,8 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -50,7 +52,7 @@ public class QiniuUtils {
      * @param imageData
      * @return
      */
-    public String base64Upload(String imageData) {
+    public String base64Upload(String imageData) throws Exception {
 
         if (!StringUtils.isEmpty(imageData)) {
             String imgStr = imageData.substring(imageData.indexOf(",") + 1, imageData.length());
@@ -83,16 +85,16 @@ public class QiniuUtils {
                     try {
                         System.err.println(r.bodyString());
                     } catch (QiniuException ex2) {
-                        // ignore
+                        throw new Exception("上传失败");
                     }
                 }
 
-                return null;
+                throw new Exception("上传失败");
             } catch (Exception e) {
-                return null;
+                throw new Exception("编码失败");
             }
         } else {
-            return null;
+            throw new Exception("编码内容为空");
         }
     }
 
@@ -152,28 +154,26 @@ public class QiniuUtils {
     }
 
     /**
-     * request上传
-     *
+     * 表单上传
      * @param request
      * @return
-     * @throws IOException
+     * @throws Exception
      */
-    public String ioUpload(HttpServletRequest request) throws IOException {
-        String upFlag = request.getParameter("isup");
-        String delFlag = request.getParameter("isdel");
+    public List<String> requestUpload(HttpServletRequest request) throws IOException {
         MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
         Map<String, MultipartFile> fileMap = multipartRequest.getFileMap();
-        String upload = "";
+        List<String> imgUrls = new ArrayList<>();
         for (Map.Entry<String, MultipartFile> entity : fileMap.entrySet()) {
             MultipartFile file = entity.getValue();// 获取上传文件对象
             String originalFilename = file.getOriginalFilename();//文件名
             if (originalFilename.trim() != "") {
                 String key =  UUID.randomUUID().toString().replace("-", "") + "." + originalFilename.length();
                 InputStream inputStream = file.getInputStream();
-                upload = uploadInputStream(inputStream, key);
+                String imgUrl = uploadInputStream(inputStream, key);
+                imgUrls.add(imgUrl);
             }
         }
-        return upload;
+        return imgUrls;
     }
 
 }
