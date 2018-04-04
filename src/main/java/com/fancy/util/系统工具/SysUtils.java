@@ -2,8 +2,8 @@
  * Copyright (C), 2015-2018, 深圳市蜂窝网络有限公司
  * FileName: SysUtils
  * Author:   fangdaji
- * Date:     2018/4/4 16:05
- * Description: 提供些获取系统信息相关的工具方法
+ * Date:     2018/4/4 16:18
+ * Description:
  * History:
  */
 package com.fancy.util.系统工具;
@@ -28,7 +28,6 @@ import java.util.List;
  * @since 1.0.0
  */
 public class SysUtils {
-
 
     /**
      * JVM的版本
