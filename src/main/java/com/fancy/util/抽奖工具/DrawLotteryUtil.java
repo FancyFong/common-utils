@@ -65,25 +65,25 @@ public class DrawLotteryUtil {
     }
 
     public static void main(String[] args) {
-        Gift iphone = new Gift();
-        iphone.setId(101);
-        iphone.setName("苹果手机");
-        iphone.setProb(0.1D);
+        Gift cash = new Gift();
+        cash.setId(101);
+        cash.setName("5元现金红包");
+        cash.setProb(0.3D);
+
+        Gift free = new Gift();
+        free.setId(102);
+        free.setName("消费免单");
+        free.setProb(0.2D);
 
         Gift thanks = new Gift();
-        thanks.setId(102);
-        thanks.setName("再接再厉");
+        thanks.setId(103);
+        thanks.setName("谢谢惠顾");
         thanks.setProb(0.5D);
 
-        Gift vip = new Gift();
-        vip.setId(103);
-        vip.setName("优酷会员");
-        vip.setProb(0.4D);
-
         List<Gift> list = new ArrayList<Gift>();
-        list.add(vip);
+        list.add(cash);
+        list.add(free);
         list.add(thanks);
-        list.add(iphone);
 
         for(int i=0;i<100;i++){
             int index = drawGift(list);
