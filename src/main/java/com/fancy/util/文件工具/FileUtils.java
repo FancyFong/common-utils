@@ -1,5 +1,6 @@
 package com.fancy.util.文件工具;
 
+import com.alibaba.fastjson.JSONArray;
 import com.fancy.util.系统工具.SysUtils;
 import com.qiniu.util.Base64;
 
@@ -15,7 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- *  封装了些文件相关的操作 <br>
+ * 封装了些文件相关的操作 <br>
  * 〈〉
  *
  * @author fangdaji
@@ -41,6 +42,7 @@ public class FileUtils {
 
     /**
      * 获取文件的md5
+     *
      * @param file
      * @return
      */
@@ -66,6 +68,7 @@ public class FileUtils {
             }
         }
     }
+
     /**
      * 获取文件的行数
      *
@@ -73,7 +76,7 @@ public class FileUtils {
      * @return 文件行数
      */
     public final static int countLines(File file) {
-        try(LineNumberReader rf = new LineNumberReader(new FileReader(file))){
+        try (LineNumberReader rf = new LineNumberReader(new FileReader(file))) {
             long fileLength = file.length();
             rf.skip(fileLength);
             return rf.getLineNumber();
@@ -222,9 +225,7 @@ public class FileUtils {
      * 将字符串写入到文件中
      */
     public final static boolean write(File file, String str) {
-        try (
-                RandomAccessFile randomFile = new RandomAccessFile(file, "rw")
-        ) {
+        try (RandomAccessFile randomFile = new RandomAccessFile(file, "rw")) {
             randomFile.writeBytes(str);
             return true;
         } catch (IOException e) {
@@ -474,12 +475,13 @@ public class FileUtils {
 
     /**
      * 罗列指定路径下的全部文件
-     * @param path 需要处理的文件
+     *
+     * @param path  需要处理的文件
      * @param child 是否罗列子文件
      * @return 包含所有文件的的list
      */
-    public final static List<File> listFile(String path,boolean child){
-        return listFile(new File(path),child);
+    public final static List<File> listFile(String path, boolean child) {
+        return listFile(new File(path), child);
     }
 
 
@@ -504,11 +506,12 @@ public class FileUtils {
 
     /**
      * 罗列指定路径下的全部文件
-     * @param path 指定的路径
+     *
+     * @param path  指定的路径
      * @param child 是否罗列子目录
      * @return
      */
-    public final static List<File> listFile(File path,boolean child){
+    public final static List<File> listFile(File path, boolean child) {
         List<File> list = new ArrayList<>();
         File[] files = path.listFiles();
         for (File file : files) {
@@ -609,16 +612,18 @@ public class FileUtils {
 
     /**
      * 获取文件后缀名
+     *
      * @param file
      * @return
      */
-    public final static String suffix(File file){
-        String fileName=file.getName();
-        return fileName.substring(fileName.indexOf(".")+1);
+    public final static String suffix(File file) {
+        String fileName = file.getName();
+        return fileName.substring(fileName.indexOf(".") + 1);
     }
 
     /**
      * 将文件转成base64 字符串
+     *
      * @param path 文件路径
      * @return
      * @throws Exception
@@ -648,10 +653,143 @@ public class FileUtils {
         return base64;
     }
 
+    /**
+     * 以字符为单位读取文件，常用于读文本，数字等类型的文件
+     */
+    public static void readFileByChars(String fileName) {
+        File file = new File(fileName);
+        Reader reader = null;
+        StringBuffer sb = new StringBuffer();
+        try {
+            System.out.println("以字符为单位读取文件内容，一次读一个字节：");
+            // 一次读一个字符
+            reader = new InputStreamReader(new FileInputStream(file));
+            int tempchar;
+            while ((tempchar = reader.read()) != -1) {
+                // 对于windows下，\r\n这两个字符在一起时，表示一个换行。
+                // 但如果这两个字符分开显示时，会换两次行。
+                // 因此，屏蔽掉\r，或者屏蔽\n。否则，将会多出很多空行。
+                if (((char) tempchar) != '\r') {
+                    //System.out.print((char) tempchar);
+                    sb.append((char) tempchar);
+                }
+            }
+            reader.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        System.out.println(sb.toString());
+    }
+
+    /**
+     * 随机读取文件内容
+     */
+    public static void readFileByRandomAccess(String fileName) {
+        RandomAccessFile randomFile = null;
+        try {
+            System.out.println("随机读取一段文件内容：");
+            // 打开一个随机访问文件流，按只读方式
+            randomFile = new RandomAccessFile(fileName, "r");
+            // 文件长度，字节数
+            long fileLength = randomFile.length();
+            // 读文件的起始位置
+            int beginIndex = (fileLength > 4) ? 4 : 0;
+            // 将读文件的开始位置移到beginIndex位置。
+            randomFile.seek(beginIndex);
+            byte[] bytes = new byte[10];
+            int byteread = 0;
+            // 一次读10个字节，如果文件内容不足10个字节，则读剩下的字节。
+            // 将一次读取的字节数赋给byteread
+            while ((byteread = randomFile.read(bytes)) != -1) {
+                System.out.write(bytes, 0, byteread);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if (randomFile != null) {
+                try {
+                    randomFile.close();
+                } catch (IOException e1) {
+                }
+            }
+        }
+    }
+
+    public static byte[] fileToBytes(File file) {
+        byte[] buffer = null;
+
+        FileInputStream fis = null;
+        ByteArrayOutputStream bos = null;
+
+        try {
+            fis = new FileInputStream(file);
+            bos = new ByteArrayOutputStream();
+
+            byte[] b = new byte[1024];
+
+            int n;
+
+            while ((n = fis.read(b)) != -1) {
+                bos.write(b, 0, n);
+            }
+
+            buffer = bos.toByteArray();
+        } catch (FileNotFoundException ex) {
+            ex.printStackTrace();
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        } finally {
+            try {
+                if (null != bos) {
+                    bos.close();
+                }
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            } finally {
+                try {
+                    if (null != fis) {
+                        fis.close();
+                    }
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                }
+            }
+        }
+
+        return buffer;
+    }
+
+    public static Object toObject(byte[] bytes) {
+        Object obj = null;
+        try {
+            ByteArrayInputStream bis = new ByteArrayInputStream(bytes);
+            ObjectInputStream ois = new ObjectInputStream(bis);
+            obj = ois.readObject();
+            ois.close();
+            bis.close();
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        } catch (ClassNotFoundException ex) {
+            ex.printStackTrace();
+        }
+        return obj;
+    }
+
     public static void main(String[] args) throws Exception {
-        String imageData = encodeBase64File("E:\\1.png");
-        String imgStr = imageData.substring(imageData.indexOf(",") + 1, imageData.length());
-        System.out.println(imgStr);
+        /*String aa = "";
+        for (int i = 0; i < 100000; i++) {
+            aa += i;
+        }
+        write(new File("D:\\1.txt"), aa);*/
+
+        //byte[] bytes = fileToBytes("D:\\1.txt");
+        //System.out.println(bytes);
+
+        File file = new File("D:\\32243833");
+        byte[] bytes = fileToBytes(file);
+        Object o = toObject(bytes);
+        System.out.println(JSONArray.toJSONString(o));
     }
 
 }
