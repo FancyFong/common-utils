@@ -1,6 +1,5 @@
 package com.fancy.util.文件工具;
 
-import com.alibaba.fastjson.JSONArray;
 import com.fancy.util.系统工具.SysUtils;
 import com.qiniu.util.Base64;
 
@@ -777,19 +776,20 @@ public class FileUtils {
     }
 
     public static void main(String[] args) throws Exception {
-        /*String aa = "";
+        String aa = "";
         for (int i = 0; i < 100000; i++) {
+            System.out.println(i);
             aa += i;
         }
-        write(new File("D:\\1.txt"), aa);*/
+        write(new File("D:\\1.txt"), aa);
 
-        //byte[] bytes = fileToBytes("D:\\1.txt");
+        /*//byte[] bytes = fileToBytes("D:\\1.txt");
         //System.out.println(bytes);
 
         File file = new File("D:\\32243833");
         byte[] bytes = fileToBytes(file);
         Object o = toObject(bytes);
-        System.out.println(JSONArray.toJSONString(o));
+        System.out.println(JSONArray.toJSONString(o));*/
     }
 
 }

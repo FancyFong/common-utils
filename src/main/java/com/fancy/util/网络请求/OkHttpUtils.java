@@ -328,4 +328,37 @@ public class OkHttpUtils {
         }
     }
 
+    public static void main(String[] args) throws IOException {
+
+        /*for (int i = 0; i < 50; i++) {
+            TestThread thread = new TestThread();
+            thread.start();
+        }*/
+
+        String html = get("https://sj.qq.com/myapp/detail.htm?apkName=com.huarongcapita.tutin");
+        String temp = "var appDetailData = ";
+        String appDetailDataStr = html.substring(html.indexOf(temp));
+        int i = appDetailDataStr.indexOf("}");
+        System.out.println(appDetailDataStr.substring(temp.length(), i + 1));
+    }
+
+    private static class TestThread extends Thread {
+
+        public TestThread() {
+
+        }
+
+        @Override
+        public void run() {
+            for (int i = 0; i < 100; i++) {
+                try {
+                    String s = postJson("https://api.51sayhello.com/app/account/login?account=15818601535&password=e10adc3949ba59abbe56e057f20f883e", "");
+                    System.out.println(i + ":" + s);
+                } catch (IOException e) {
+                    System.err.println("异常");
+                }
+            }
+        }
+    }
+
 }
